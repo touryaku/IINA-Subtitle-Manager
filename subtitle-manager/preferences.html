@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Subtitle Manager Preferences</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff;
+      --fg: #111111;
+      --muted: rgba(0, 0, 0, 0.55);
+      --border: rgba(0, 0, 0, 0.14);
+      --card: rgba(0, 0, 0, 0.04);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111111;
+        --fg: #f2f2f2;
+        --muted: rgba(255, 255, 255, 0.6);
+        --border: rgba(255, 255, 255, 0.16);
+        --card: rgba(255, 255, 255, 0.06);
+      }
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 18px;
+      background: var(--bg);
+      color: var(--fg);
+      font: 13px -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    h1 {
+      font-size: 16px;
+      margin: 0 0 12px 0;
+    }
+
+    h2 {
+      font-size: 13px;
+      margin: 16px 0 8px 0;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .row:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      font-weight: 600;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 4px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: inherit;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    input[type="checkbox"] {
+      transform: translateY(1px);
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Subtitle Manager Preferences</h1>
+
+  <h2>Behavior</h2>
+  <div class="card">
+    <div class="row">
+      <div class="label">Show OSD</div>
+      <div>
+        <label>
+          <input type="checkbox" data-pref-key="show_osd" />
+          Show informational OSD messages (copy success, sidebar reload, etc.)
+        </label>
+        <div class="hint">
+          Errors are still shown even if OSD is disabled.
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">Auto-hide Window</div>
+      <div>
+        <label>
+          <input type="checkbox" data-pref-key="auto_hide_window_fullscreen" />
+          Auto-hide the Subtitle Manager window in fullscreen (show on pause, hide on play)
+        </label>
+        <div class="hint">
+          This corresponds to the plugin menu option "Auto-hide Window in Fullscreen".
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Shortcuts</h2>
+  <div class="card">
+    <div class="row">
+      <div class="label">Show Sidebar</div>
+      <div>
+        <input type="text" data-pref-key="shortcut_show_sidebar" placeholder="Meta+Alt+s" />
+        <div class="hint">Example: <code>Meta+Alt+s</code> (Cmd+Option+S)</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">Show Window</div>
+      <div>
+        <input type="text" data-pref-key="shortcut_show_window" placeholder="Meta+Alt+e" />
+        <div class="hint">Example: <code>Meta+Alt+e</code> (Cmd+Option+E)</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">Copy Timestamped</div>
+      <div>
+        <input type="text" data-pref-key="shortcut_copy_current" placeholder="Meta+Alt+c" />
+        <div class="hint">
+          Default is <code>Meta+Alt+c</code> (Cmd+Option+C) to avoid conflicts with Edit &gt; Copy.
+          If you want Cmd+C, use macOS App Shortcuts to override (recommended).
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">Apply Changes</div>
+      <div>
+        <div class="hint">
+          Shortcut changes apply after reloading the plugin (IINA: Plugins &gt; Reload All Plugins) or restarting IINA.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Notes</h2>
+  <div class="card">
+    <div class="hint">
+      Key string format is the same as IINA plugin menu <code>keyBinding</code> values.
+      Common modifiers: <code>Meta</code> (Cmd), <code>Alt</code> (Option), <code>Shift</code>, <code>Ctrl</code>.
+      Example: <code>Meta+Alt+e</code>.
+    </div>
+    <div class="hint" style="margin-top:10px;">
+      macOS App Shortcuts: System Settings &gt; Keyboard &gt; Keyboard Shortcuts &gt; App Shortcuts.
+      Use the exact menu item title (e.g. "Show Subtitle Manager Window").
+    </div>
+  </div>
+
+  <script>
+    /* global iina */
+    (function () {
+      function qsa(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
+
+      function setValue(el, v) {
+        if (el.type === "checkbox") el.checked = !!v;
+        else el.value = v == null ? "" : String(v);
+      }
+
+      function getValue(el) {
+        if (el.type === "checkbox") return !!el.checked;
+        return String(el.value || "").trim();
+      }
+
+      function load() {
+        qsa("[data-pref-key]").forEach(function (el) {
+          var key = el.getAttribute("data-pref-key");
+          try {
+            var v = iina.preferences.get(key);
+            setValue(el, v);
+          } catch (_e) {
+            // ignore
+          }
+          el.addEventListener("change", function () {
+            try {
+              iina.preferences.set(key, getValue(el));
+              if (typeof iina.preferences.sync === "function") iina.preferences.sync();
+            } catch (_e) {
+              // ignore
+            }
+          });
+        });
+      }
+
+      load();
+    })();
+  </script>
+</body>
+
+</html>

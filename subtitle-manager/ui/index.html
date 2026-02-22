@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Subtitle Manager</title>
+  <link rel="stylesheet" href="style.css?v=1.0.0" />
+  <script defer src="app.js?v=1.0.0"></script>
+</head>
+
+<body>
+  <div class="sm-root">
+    <header class="sm-toolbar">
+      <div class="sm-toolbar-left">
+        <button id="btnDec" class="sm-btn" title="Decrease Subtitle Sync by 0.5s">-0.5</button>
+        <button id="btnInc" class="sm-btn" title="Increase Subtitle Sync by 0.5s">+0.5</button>
+
+        <div id="delayContainer" class="sm-delay">
+          <button id="btnDelay" class="sm-btn sm-delay-btn" title="Adjust subtitle sync">0</button>
+          <div id="delayPanel" class="sm-delay-panel" role="dialog" aria-label="Adjust subtitle sync">
+            <input id="delayInput" class="sm-input" type="number" inputmode="decimal" step="0.1" />
+            <button id="btnApplyDelay" class="sm-btn" title="Apply manual subtitle sync">A</button>
+          </div>
+        </div>
+
+        <button id="btnSyncSelected" class="sm-btn" title="Reset entire sync to the selected position">Sync
+          Selected</button>
+        <button id="btnResetDelay" class="sm-btn" title="Reset Sync">Reset</button>
+        <button id="btnFindDelay" class="sm-btn" title="Find Current Sync">Find</button>
+
+        <label class="sm-toggle" title="Auto move to current sync">
+          <input id="autoScrollToggle" type="checkbox" checked />
+          <span>Auto</span>
+        </label>
+      </div>
+
+      <div class="sm-toolbar-search">
+        <input id="searchInput" class="sm-input sm-search" type="search" placeholder="Search" aria-label="Search subtitles" />
+      </div>
+
+      <div class="sm-toolbar-right">
+        <button id="btnCopy" class="sm-btn" title="Copy (Cmd+C)">Copy</button>
+        <button id="btnAttach" class="sm-btn" title="Attach subtitle file">Attach</button>
+        <button id="btnDetach" class="sm-btn" title="Detach window / Show sidebar">Detach</button>
+      </div>
+    </header>
+
+    <nav id="tabs" class="sm-tabs"></nav>
+
+    <div id="inactiveBanner" class="sm-banner sm-hidden"></div>
+
+    <div class="sm-list-header">
+      <div class="sm-col sm-col-time">Time</div>
+      <div class="sm-col sm-col-text">Text</div>
+      <div class="sm-col sm-col-ms">ms</div>
+      <div id="timeResizer" class="sm-resizer" title="Drag to resize time column" aria-hidden="true"></div>
+    </div>
+    <main id="list" class="sm-list" role="listbox" aria-label="Subtitle cues"></main>
+
+    <footer class="sm-status">
+      <div id="statusLeft" class="sm-status-left"></div>
+      <div id="statusRight" class="sm-status-right"></div>
+    </footer>
+  </div>
+</body>
+
+</html>

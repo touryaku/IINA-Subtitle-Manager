@@ -1,0 +1,22 @@
+{
+  "name": "Subtitle Manager",
+  "identifier": "io.iina.subtitle-manager",
+  "version": "1.0.0",
+  "description": "Browse, sync, and copy subtitles with timestamps.",
+  "author": {
+    "name": "Subtitle Manager Plugin"
+  },
+  "entry": "index.js",
+  "preferencesPage": "preferences.html",
+  "preferenceDefaults": {
+    "show_osd": true,
+    "auto_hide_window_fullscreen": true,
+    "shortcut_show_sidebar": "Meta+Alt+s",
+    "shortcut_show_window": "Meta+Alt+e",
+    "shortcut_copy_current": "Meta+Alt+c"
+  },
+  "permissions": ["show-osd", "file-system"],
+  "sidebarTab": {
+    "name": "Subtitles"
+  }
+}

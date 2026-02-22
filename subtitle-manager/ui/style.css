@@ -1,0 +1,624 @@
+:root {
+  --bg: #f7f7f7;
+  --panel: rgba(255, 255, 255, 0.7);
+  --border: rgba(0, 0, 0, 0.12);
+  --muted: rgba(0, 0, 0, 0.55);
+  --text: rgba(0, 0, 0, 0.92);
+  --accent: #0a84ff;
+  --rowHover: rgba(10, 132, 255, 0.08);
+  --rowActive: rgba(10, 132, 255, 0.15);
+  --rowSelected: rgba(10, 132, 255, 0.22);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+  /* List column sizing (also used by the draggable divider). */
+  --sm-time-col: 180px;
+  --sm-time-col-compact: 80px;
+  --sm-ms-col: 92px;
+  --sm-ms-col-compact: 64px;
+  --sm-col-gap: 12px;
+  /* Compact sidebar: Time/Text separation. Can be 0px to maximize text space. */
+  --sm-col-gap-compact: 0px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #171717;
+    --panel: rgba(30, 30, 30, 0.8);
+    --border: rgba(255, 255, 255, 0.14);
+    --muted: rgba(255, 255, 255, 0.55);
+    --text: rgba(255, 255, 255, 0.92);
+    --accent: #0a84ff;
+    --rowHover: rgba(10, 132, 255, 0.12);
+    --rowActive: rgba(10, 132, 255, 0.18);
+    --rowSelected: rgba(10, 132, 255, 0.26);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color-scheme: light dark;
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(10, 132, 255, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 110% 20%, rgba(255, 255, 255, 0.12), transparent 55%),
+    var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  user-select: none;
+  overflow: hidden;
+}
+
+.sm-resizing,
+.sm-resizing * {
+  cursor: col-resize !important;
+}
+
+.sm-resizing .sm-list {
+  user-select: none !important;
+}
+
+.sm-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sm-toolbar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 10px;
+  flex: 0 0 auto;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+}
+
+.sm-toolbar-left,
+.sm-toolbar-search,
+.sm-toolbar-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sm-toolbar-search {
+  flex: 0 1 120px;
+  min-width: 90px;
+  justify-content: center;
+}
+
+.sm-toolbar-right {
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.sm-compact .sm-toolbar {
+  /* One-line compact toolbar (sidebar): avoid wrapping into multiple rows.
+     If the sidebar is too narrow, users can widen the sidebar. */
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 6px 8px;
+  gap: 6px;
+}
+
+.sm-compact .sm-toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.sm-compact .sm-toolbar-left {
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.sm-compact .sm-toolbar-right {
+  margin-left: 0 !important;
+  flex-wrap: nowrap;
+}
+
+.sm-compact .sm-toolbar-search {
+  flex: 0 0 auto;
+  min-width: 86px;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+
+.sm-compact .sm-toolbar-left,
+.sm-compact .sm-toolbar-search,
+.sm-compact .sm-toolbar-right {
+  gap: 4px;
+}
+
+.sm-compact .sm-toolbar-search {
+  min-width: 0;
+}
+
+.sm-btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--text);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sm-compact .sm-btn {
+  padding: 3px 6px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sm-btn {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.sm-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sm-btn:hover:not(:disabled) {
+  border-color: rgba(10, 132, 255, 0.4);
+  background: rgba(10, 132, 255, 0.12);
+}
+
+.sm-delay {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border-left: 0;
+  border-right: 0;
+  margin: 0;
+  position: relative;
+}
+
+.sm-compact .sm-delay {
+  gap: 4px;
+  padding: 0;
+  margin: 0;
+}
+
+.sm-delay-btn {
+  display: none;
+}
+
+.sm-delay-panel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sm-compact .sm-delay-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  font-variant-numeric: tabular-nums;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.sm-compact .sm-delay-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 50;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(30, 30, 30, 0.92);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+  gap: 6px;
+}
+
+@media (prefers-color-scheme: light) {
+  .sm-compact .sm-delay-panel {
+    background: rgba(255, 255, 255, 0.92);
+  }
+}
+
+.sm-compact .sm-delay-panel.sm-delay-panel-open {
+  display: flex;
+}
+
+.sm-compact .sm-delay-panel .sm-input {
+  width: 86px;
+}
+
+.sm-input {
+  width: 90px;
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 6px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--text);
+  font-size: 12px;
+}
+
+.sm-search {
+  width: 100%;
+  max-width: 120px;
+}
+
+/* Wide layouts (standalone window): keep the whole toolbar on a single line. */
+@media (min-width: 860px) {
+  .sm-toolbar {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  .sm-toolbar-left,
+  .sm-toolbar-search,
+  .sm-toolbar-right {
+    flex-wrap: nowrap;
+  }
+}
+
+.sm-compact .sm-input {
+  width: 66px;
+  padding: 3px 5px;
+  font-size: 11px;
+}
+
+.sm-compact .sm-search {
+  max-width: 96px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sm-input {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+.sm-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  padding-left: 2px;
+}
+
+.sm-compact .sm-toggle {
+  gap: 4px;
+  font-size: 11px;
+}
+
+.sm-compact .sm-toggle span {
+  display: none;
+}
+
+.sm-toggle input {
+  width: 14px;
+  height: 14px;
+}
+
+.sm-tabs {
+  position: relative;
+  z-index: 9;
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  min-height: 44px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  flex: 0 0 auto;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.sm-compact .sm-tabs {
+  padding: 6px 8px;
+  min-height: 38px;
+}
+
+.sm-tabs::-webkit-scrollbar {
+  height: 6px;
+}
+
+.sm-tabs::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sm-tabs::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .sm-tabs {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.sm-tab {
+  flex: 0 0 auto;
+  max-width: 260px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sm-compact .sm-tab {
+  max-width: 200px;
+  padding: 5px 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sm-tab {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.sm-tab:hover {
+  background: rgba(10, 132, 255, 0.12);
+  border-color: rgba(10, 132, 255, 0.35);
+}
+
+.sm-tab.sm-tab-active {
+  background: rgba(10, 132, 255, 0.18);
+  border-color: rgba(10, 132, 255, 0.6);
+}
+
+.sm-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(10, 132, 255, 0.5);
+  color: var(--accent);
+  background: rgba(10, 132, 255, 0.12);
+}
+
+.sm-banner {
+  position: relative;
+  z-index: 8;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10, 132, 255, 0.08);
+  color: var(--text);
+}
+
+.sm-banner .sm-btn {
+  margin-left: 6px;
+}
+
+.sm-hidden {
+  display: none;
+}
+
+.sm-list-header {
+  position: relative;
+  z-index: 7;
+  display: grid;
+  grid-template-columns: var(--sm-time-col) 1fr var(--sm-ms-col);
+  gap: var(--sm-col-gap);
+  padding: 6px 10px;
+  flex: 0 0 auto;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.sm-list {
+  flex: 1 1 auto;
+  min-height: 0; /* critical for flex children with overflow */
+  overflow: auto;
+  padding: 6px 0;
+  user-select: text;
+}
+
+.sm-row {
+  display: grid;
+  grid-template-columns: var(--sm-time-col) 1fr var(--sm-ms-col);
+  gap: var(--sm-col-gap);
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  align-items: center;
+}
+
+.sm-compact .sm-list-header,
+.sm-compact .sm-row {
+  /* Sidebar: prioritize subtitle text. Hide ms column in compact mode. */
+  grid-template-columns: var(--sm-time-col-compact) 1fr;
+  gap: var(--sm-col-gap-compact);
+}
+
+.sm-compact .sm-list-header,
+.sm-compact .sm-row {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.sm-col-time,
+.sm-col-ms {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sm-compact .sm-col-ms {
+  display: none;
+}
+
+.sm-compact .sm-list-header,
+.sm-compact .sm-row {
+  /* column sizing is controlled by CSS variables (see :root) */
+}
+
+.sm-compact .sm-col-time,
+.sm-compact .sm-col-ms {
+  font-size: 11px;
+}
+
+.sm-col-ms {
+  text-align: right;
+}
+
+.sm-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  left: calc(var(--sm-time-col) + (var(--sm-col-gap) * 0.5));
+  transform: translateX(-50%);
+  cursor: col-resize;
+  opacity: 0.55;
+}
+
+.sm-compact .sm-resizer {
+  left: calc(var(--sm-time-col-compact) + (var(--sm-col-gap-compact) * 0.5));
+}
+
+.sm-compact .sm-resizer {
+  opacity: 0;
+}
+
+.sm-compact .sm-resizer::before {
+  display: none;
+}
+
+.sm-resizer::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+}
+
+.sm-resizer:hover,
+.sm-resizer:active {
+  opacity: 0.9;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sm-row {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}
+
+.sm-row:hover {
+  background: var(--rowHover);
+}
+
+.sm-row.sm-row-active {
+  background: var(--rowActive);
+}
+
+.sm-row.sm-row-selected {
+  background: var(--rowSelected);
+}
+
+.sm-row.sm-row-match {
+  box-shadow: inset 0 0 0 1px rgba(255, 200, 0, 0.35);
+}
+
+.sm-row.sm-row-match-focus {
+  box-shadow: inset 0 0 0 2px rgba(255, 200, 0, 0.75);
+}
+
+.sm-col-time,
+.sm-col-ms {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.sm-col-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sm-compact .sm-row {
+  align-items: start;
+}
+
+.sm-compact .sm-col-text {
+  /* In the sidebar, multi-line text is more usable than horizontal scrolling. */
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.25;
+}
+
+.sm-status {
+  position: relative;
+  z-index: 7;
+  padding: 6px 10px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex: 0 0 auto;
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+}
+
+.sm-status-left,
+.sm-status-right {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .sm-list-header,
+  .sm-row {
+    grid-template-columns: 160px 1fr;
+  }
+
+  .sm-col-ms {
+    display: none;
+  }
+}
